@@ -15,6 +15,7 @@ long SGP30_status;
 String SGP30_I2c;
 int SGP30_I2c_Bus;
 unsigned long SGP30PreviousMillis = 0;
+unsigned long lastBaselineMillis=0;
 int sensorInterval = 1000;
 bool initialized = false;
 
@@ -33,6 +34,7 @@ void Setup() {
     } else {
         sgp->initAirQuality();
         initialized = true;
+        //getIAQBaseline(uint16_t *eco2_base,uint16_t *tvoc_base);
     }
 }
 
@@ -64,6 +66,14 @@ void Loop() {
             pub((roomsTopic + "/co2").c_str(), 0, 1, String(co2).c_str());
             pub((roomsTopic + "/tvoc").c_str(), 0, 1, String(tvoc).c_str());
         }
+
+        if (millis() - lastBaselineMillis >= 12*60*60*1000UL) {
+            lastBaselineMillis = millis();
+            Serial.print("SGP30: baseline time");
+            //setIAQBaseline(uint16_t eco2_base, uint16_t tvoc_base);
+
+        }
+
     }
 }
 

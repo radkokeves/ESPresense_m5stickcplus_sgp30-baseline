@@ -45,6 +45,7 @@ bool sendTelemetry(unsigned int totalSeen, unsigned int totalFpSeen, int unsigne
             && Battery::SendDiscovery()
 #ifdef SENSORS
             && DHT::SendDiscovery()
+            && TVOC_SGP30::SendDiscovery()
             && AHTX0::SendDiscovery()
             && BH1750::SendDiscovery()
             && BME280::SendDiscovery()
@@ -187,8 +188,8 @@ void setupNetwork() {
     SHT::ConnectToWifi();
     TSL2561::ConnectToWifi();
     SensirionSGP30::ConnectToWifi();
+    TVOC_SGP30::ConnectToWifi();
     HX711::ConnectToWifi();
-
 #endif
 
     unsigned int connectProgress = 0;
@@ -248,6 +249,7 @@ void setupNetwork() {
     SHT::SerialReport();
     TSL2561::SerialReport();
     SensirionSGP30::SerialReport();
+    TVOC_SGP30::SerialReport();
     HX711::SerialReport();
 
 #endif
@@ -477,17 +479,14 @@ void scanTask(void *parameter) {
 }
 
 void setup() {
+
 #ifdef FAST_MONITOR
     Serial.begin(1500000);
 #else
     Serial.begin(115200);
 #endif
+
     Serial.setDebugOutput(true);
-
-#if M5STICK
-    AXP192::Setup();
-#endif
-
     GUI::Setup(true);
     BleFingerprintCollection::Setup();
 
@@ -503,6 +502,17 @@ void setup() {
     setClock();
 #endif
     GUI::Setup(false);
+
+#if M5STICK
+    //M5.begin(false, true, true); 
+    M5.begin();
+    M5.Axp.ScreenBreath(10);
+    M5.Lcd.fillScreen(BLUE);
+#endif
+#ifdef SENSORS
+    TVOC_SGP30::Setup();
+#endif
+
     Motion::Setup();
     Battery::Setup();
 #ifdef SENSORS
@@ -518,6 +528,18 @@ void setup() {
     SensirionSGP30::Setup();
     HX711::Setup();
 #endif
+
+#if M5STICK
+    M5.Lcd.setRotation(3);
+    M5.Lcd.setTextSize(2);
+    M5.Axp.ScreenBreath(10);
+    M5.Lcd.setTextColor(RED, BLACK);
+    M5.Lcd.println(Network.localIP());
+    delay(5000);
+    M5.Lcd.fillScreen(BLACK);
+    M5.Axp.ScreenBreath(7);
+#endif
+
     xTaskCreatePinnedToCore(scanTask, "scanTask", SCAN_TASK_STACK_SIZE, nullptr, 1, &scanTaskHandle, CONFIG_BT_NIMBLE_PINNED_TO_CORE);
     xTaskCreatePinnedToCore(reportTask, "reportTask", REPORT_TASK_STACK_SIZE, nullptr, 1, &reportTaskHandle, REPORT_PINNED_TO_CORE);
 }
@@ -534,9 +556,6 @@ void loop() {
     Motion::Loop();
     HttpWebServer::Loop();
     SerialImprov::Loop(false);
-#if M5STICK
-    AXP192::Loop();
-#endif
 #ifdef SENSORS
     DHT::Loop();
     AHTX0::Loop();
@@ -547,6 +566,7 @@ void loop() {
     SHT::Loop();
     TSL2561::Loop();
     SensirionSGP30::Loop();
+    TVOC_SGP30::Loop();
     HX711::Loop();
 #endif
 }

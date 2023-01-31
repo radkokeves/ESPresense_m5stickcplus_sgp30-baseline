@@ -26,7 +26,12 @@
 #include "mqtt.h"
 #include "string_utils.h"
 #ifdef M5STICK
-#include <AXP192.h>
+//#include <AXP192.h>
+#ifdef PLUS
+#include <M5StickCPlus.h>
+#elif
+#include <M5StickC.h>
+#endif
 #endif
 #ifdef SENSORS
 #include <Wire.h>
@@ -40,6 +45,7 @@
 #include "HX711.h"
 #include "SHT.h"
 #include "SensirionSGP30.h"
+#include "TVOC_SGP30.h"
 #include "TSL2561.h"
 #endif
 
