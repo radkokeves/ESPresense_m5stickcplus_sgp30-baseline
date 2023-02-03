@@ -552,6 +552,9 @@ void loop() {
         if (freeHeap < 20000) Serial.printf("Low memory: %u bytes free\n", freeHeap);
         if (freeHeap > 70000) Updater::Loop();
     }
+#if M5STICK
+    m5button::Loop();
+#endif
     GUI::Loop();
     Motion::Loop();
     HttpWebServer::Loop();

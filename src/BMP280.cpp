@@ -8,6 +8,7 @@
 #include "string_utils.h"
 
 #include <Adafruit_BMP280.h>
+#include "Display.h"
 
 namespace BMP280
 {
@@ -74,6 +75,12 @@ namespace BMP280
 
             pub((roomsTopic + "/bmp280_temperature").c_str(), 0, 1, String(temperature).c_str());
             pub((roomsTopic + "/bmp280_pressure").c_str(), 0, 1, String(pressure).c_str());
+
+            Display::Status("bmp280_temperature %s\n",String(temperature).c_str());
+            Display::Status("bmp280_pressure %s\n",String(pressure).c_str());
+
+            //Serial.printf("bmp280_temperature %s\n",String(temperature).c_str());
+            //Serial.printf("bmp280_pressure %s\n",String(pressure).c_str());
 
             BMP280PreviousMillis = millis();
         }

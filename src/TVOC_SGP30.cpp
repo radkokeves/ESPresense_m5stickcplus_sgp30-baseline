@@ -23,7 +23,7 @@
 #include "globals.h"
 #include "mqtt.h"
 #include "string_utils.h"
-
+#include "Display.h"
 
 namespace TVOC_SGP30 {
 
@@ -159,6 +159,9 @@ void Loop() {
         Serial.print("TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");
         Serial.print("eCO2 "); Serial.print(sgp.eCO2); Serial.println(" ppm");
         */
+       Display::Status("TVOC %i ppb\n",sgp.TVOC);
+       Display::Status("eCO2 %i ppm\n",sgp.eCO2);
+
         if (! sgp.IAQmeasureRaw()) {
             Serial.println("SGP30: Raw Measurement failed");
             return;

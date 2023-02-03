@@ -9,6 +9,8 @@
 #include "mqtt.h"
 #include "string_utils.h"
 
+#include "Display.h"
+
 namespace SHT {
 SHTSensor* sensor;
 int bus = -1;
@@ -50,6 +52,8 @@ void Loop() {
         if (sensor->readSample()) {
             pub((roomsTopic + "/temperature").c_str(), 0, 1, String(sensor->getTemperature()).c_str());
             pub((roomsTopic + "/humidity").c_str(), 0, 1, String(sensor->getHumidity()).c_str());
+            Display::Status("sht_temperature %s\n",String(sensor->getTemperature()).c_str());
+            Display::Status("sht_humidity %s\n",String(sensor->getHumidity()).c_str());
         }
     }
 }

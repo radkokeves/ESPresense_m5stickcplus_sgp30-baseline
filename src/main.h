@@ -26,7 +26,7 @@
 #include "mqtt.h"
 #include "string_utils.h"
 #ifdef M5STICK
-//#include <AXP192.h>
+#include "m5button.h"
 #ifdef PLUS
 #include <M5StickCPlus.h>
 #elif
