@@ -55,6 +55,9 @@ bool sendTelemetry(unsigned int totalSeen, unsigned int totalFpSeen, int unsigne
             && TSL2561::SendDiscovery()
             && SensirionSGP30::SendDiscovery()
             && HX711::SendDiscovery()
+#ifdef M5STICK            
+            && m5envIII::SendDiscovery()
+#endif
 #endif
         ) {
             sentDiscovery = true;
@@ -190,6 +193,9 @@ void setupNetwork() {
     SensirionSGP30::ConnectToWifi();
     TVOC_SGP30::ConnectToWifi();
     HX711::ConnectToWifi();
+#ifdef M5STICK            
+    m5envIII::ConnectToWifi();
+#endif
 #endif
 
     unsigned int connectProgress = 0;
@@ -251,7 +257,9 @@ void setupNetwork() {
     SensirionSGP30::SerialReport();
     TVOC_SGP30::SerialReport();
     HX711::SerialReport();
-
+#ifdef M5STICK            
+    m5envIII::SerialReport();
+#endif
 #endif
     Serial.print("Query:        ");
     Serial.println(BleFingerprintCollection::query);
@@ -527,6 +535,9 @@ void setup() {
     TSL2561::Setup();
     SensirionSGP30::Setup();
     HX711::Setup();
+#ifdef M5STICK            
+    m5envIII::Setup();
+#endif
 #endif
 
 #if M5STICK
@@ -571,5 +582,8 @@ void loop() {
     SensirionSGP30::Loop();
     TVOC_SGP30::Loop();
     HX711::Loop();
+#ifdef M5STICK            
+    m5envIII::Loop();
+#endif
 #endif
 }

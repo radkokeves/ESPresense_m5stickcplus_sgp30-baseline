@@ -47,6 +47,9 @@
 #include "SensirionSGP30.h"
 #include "TVOC_SGP30.h"
 #include "TSL2561.h"
+#ifdef M5STICK
+#include "m5envIII.h"
+#endif
 #endif
 
 TimerHandle_t reconnectTimer;

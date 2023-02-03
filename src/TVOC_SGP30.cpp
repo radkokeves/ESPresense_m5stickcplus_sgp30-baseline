@@ -27,13 +27,13 @@
 
 namespace TVOC_SGP30 {
 
-String Adafruit_SGP30_I2c;
-int Adafruit_SGP30_I2c_Bus;
+bool Adafruit_SGP30_I2c;
+//int Adafruit_SGP30_I2c_Bus;
 
 bool initialized = false;
 unsigned long SGP30PreviousMillis = 0;
 unsigned long lastBaselineMillis=0;
-int sensorInterval = 1000;
+int sensorInterval = 10000;
 long SGP30_status;
 String baselineFn = "/SGP30bl";
 
@@ -78,8 +78,8 @@ uint32_t getAbsoluteHumidity(float temperature, float humidity) {
 
 void Setup() {
 
-    if (Adafruit_SGP30_I2c.isEmpty()) {
-        Serial.println("SGP30: Setup() Adafruit_SGP30_I2c.isEmpty()");
+    if (!Adafruit_SGP30_I2c) {
+        Serial.println("SGP30: Setup() Adafruit_SGP30_I2c not enabled");
         return;
     }
     if (!I2C_Bus_1_Started && !I2C_Bus_2_Started) return;
@@ -91,16 +91,11 @@ void Setup() {
 
     delay(15000);
 
-    if (Adafruit_SGP30_I2c == "0x58") {
-        //SGP30_status = sgp.begin(Adafruit_SGP30_I2c_Bus == 1 ? Wire : Wire1, (bool)true);
-        SGP30_status = sgp.begin();
-        if (! SGP30_status){
-            Serial.println("SGP30: Sensor not found :(");
-            return;            
-        }
-    } else {
-        Serial.println("SGP30: error: Adafruit_SGP30_I2c != 0x58");
-        return;
+    //SGP30_status = sgp.begin(Adafruit_SGP30_I2c_Bus == 1 ? Wire : Wire1, (bool)true);
+    SGP30_status = sgp.begin();
+    if (! SGP30_status){
+        Serial.println("SGP30: Sensor not found :(");
+        return;            
     }
 
     Serial.print("SGP30: Found SGP30 serial #");
@@ -129,18 +124,17 @@ void Setup() {
 void ConnectToWifi() {
     //XXX:TODO currently ignoring actual values using it only as placeholder
     AsyncWiFiSettings.html("h4", "Adafruit SGP30 - Air Quality Sensor:");
-    Adafruit_SGP30_I2c_Bus = AsyncWiFiSettings.integer("Adafruit_SGP30_I2c_Bus", 1, 2, DEFAULT_I2C_BUS, "I2C Bus");
-    Adafruit_SGP30_I2c = AsyncWiFiSettings.string("Adafruit_SGP30_I2c", "", "I2C address (0x58)");
+    //Adafruit_SGP30_I2c_Bus = AsyncWiFiSettings.integer("Adafruit_SGP30_I2c_Bus", 1, 2, DEFAULT_I2C_BUS, "I2C Bus");
+    Adafruit_SGP30_I2c = AsyncWiFiSettings.checkbox("Adafruit_SGP30", false, "enable Adafruit_SGP30 on I2C address (0x58)");
 }
 
 void SerialReport() {
     if (!I2C_Bus_1_Started && !I2C_Bus_2_Started) return;
-    if (Adafruit_SGP30_I2c.isEmpty()) {
-        Serial.print("SGP30: SerialReport() Adafruit_SGP30_I2c.isEmpty()");
+    if (!Adafruit_SGP30_I2c) {
+        Serial.println("SGP30: SerialReport() Adafruit_SGP30_I2c not enabled");
         return;
     }
-    Serial.print("SGP30:        ");
-    Serial.println("Adafruit_SGP30_I2c:"+Adafruit_SGP30_I2c + " on bus " + Adafruit_SGP30_I2c_Bus);
+    Serial.println("Adafruit SGP30:        on 0x58");
 }
 
 int counter = 0;
@@ -159,8 +153,8 @@ void Loop() {
         Serial.print("TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");
         Serial.print("eCO2 "); Serial.print(sgp.eCO2); Serial.println(" ppm");
         */
-       Display::Status("TVOC %i ppb\n",sgp.TVOC);
-       Display::Status("eCO2 %i ppm\n",sgp.eCO2);
+       Display::Status("TVOC %i ppb\teCO2 %i ppm\n",sgp.TVOC,sgp.eCO2);
+       //Display::Status("eCO2 %i ppm\n",sgp.eCO2);
 
         if (! sgp.IAQmeasureRaw()) {
             Serial.println("SGP30: Raw Measurement failed");
@@ -198,8 +192,8 @@ void Loop() {
 }
 
 bool SendDiscovery() {
-    if (Adafruit_SGP30_I2c.isEmpty()) {
-        Serial.println("SGP30: SendDiscovery() Adafruit_SGP30_I2c.isEmpty()");
+    if (!Adafruit_SGP30_I2c) {
+        Serial.println("SGP30: SendDiscovery() Adafruit_SGP30_I2c not enabled");
         return true;
     }
 

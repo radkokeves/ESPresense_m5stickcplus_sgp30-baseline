@@ -2,6 +2,7 @@
 #include "m5button.h"
 
 #ifdef M5STICK
+//#include "tb_display.h"
 #ifdef PLUS
 #include <M5StickCPlus.h>
 #else
@@ -23,6 +24,7 @@ void Display::Status(const char *format, ...) {
         M5.Axp.ScreenBreath(10);
         M5.Lcd.setTextSize(1);
         M5.Lcd.setTextColor(WHITE, BLACK);
+        //tb_display_print_String(message);
         M5.Lcd.print(message);        
     }
     free(message);
