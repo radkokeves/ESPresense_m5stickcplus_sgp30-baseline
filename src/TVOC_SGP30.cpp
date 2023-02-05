@@ -150,6 +150,7 @@ void Loop(uint32_t absoluteHumidityScaled) {
             return;
         }
         if (absoluteHumidityScaled != 0 ) {
+            Serial.printf("SGP30: Loop() sgp.setHumidity(%u)\n",(unsigned int)absoluteHumidityScaled);
             sgp.setHumidity(absoluteHumidityScaled);
         }
         /*
