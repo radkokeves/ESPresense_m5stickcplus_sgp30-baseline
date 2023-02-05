@@ -7,7 +7,7 @@ void ConnectToWifi();
 void SerialReport();
 bool SendDiscovery();
 void Setup();
-void Loop();
+void Loop(uint32_t);
 }  // namespace TVOC_SGP30
 
 #endif

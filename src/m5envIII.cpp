@@ -73,10 +73,17 @@ void SerialReport() {
 */
 }
 
-int counter = 0;
-void Loop() {
+uint32_t getAbsoluteHumidity(float temperature, float humidity) {
+    // approximation formula from Sensirion SGP30 Driver Integration chapter 3.15
+    const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature)); // [g/m^3]
+    const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity); // [mg/m^3]
+    return absoluteHumidityScaled;
+}
 
-    if (!initialized) return;
+int counter = 0;
+uint32_t Loop() {
+
+    if (!initialized) return 0;
 
     if (previousMillis == 0 || millis() - previousMillis >= sensorInterval) {
         previousMillis = millis();
@@ -100,8 +107,10 @@ void Loop() {
             pub((roomsTopic + "/temperature").c_str(), 0, 1, String(tmp).c_str());
             pub((roomsTopic + "/humidity").c_str(), 0, 1, String(hum).c_str());
             pub((roomsTopic + "/pressure").c_str(), 0, 1, String(pressure).c_str());
+            return getAbsoluteHumidity(tmp, hum);
         }
     }
+    return 0;
 }
 
 bool SendDiscovery() {

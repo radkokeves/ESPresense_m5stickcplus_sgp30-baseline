@@ -85,7 +85,9 @@ bool sendTelemetry(unsigned int totalSeen, unsigned int totalFpSeen, int unsigne
 #ifdef VERSION
     doc["ver"] = String(VERSION);
 # else
-    doc["ver"] = ESP.getSketchMD5();
+    #ifdef M5STICK 
+        doc["ver"] = ESP.getSketchMD5();
+    #endif
 #endif
 
     if (!BleFingerprintCollection::countIds.isEmpty())
@@ -580,10 +582,12 @@ void loop() {
     SHT::Loop();
     TSL2561::Loop();
     SensirionSGP30::Loop();
-    TVOC_SGP30::Loop();
-    HX711::Loop();
+    uint32_t absoluteHumidityScaled = 0;
 #ifdef M5STICK            
-    m5envIII::Loop();
+    absoluteHumidityScaled = m5envIII::Loop();
 #endif
+    TVOC_SGP30::Loop(absoluteHumidityScaled);
+    HX711::Loop();
+
 #endif
 }

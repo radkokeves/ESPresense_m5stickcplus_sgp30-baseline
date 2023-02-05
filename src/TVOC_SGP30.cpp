@@ -138,7 +138,7 @@ void SerialReport() {
 }
 
 int counter = 0;
-void Loop() {
+void Loop(uint32_t absoluteHumidityScaled) {
 
     if (!initialized) return;
 
@@ -148,6 +148,9 @@ void Loop() {
         if (! sgp.IAQmeasure()) {
             Serial.println("SGP30: IAQmeasurement failed");
             return;
+        }
+        if (absoluteHumidityScaled != 0 ) {
+            sgp.setHumidity(absoluteHumidityScaled);
         }
         /*
         Serial.print("TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");

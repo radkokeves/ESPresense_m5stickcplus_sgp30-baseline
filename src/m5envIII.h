@@ -7,7 +7,7 @@ void ConnectToWifi();
 void SerialReport();
 bool SendDiscovery();
 void Setup();
-void Loop();
+uint32_t Loop();
 }  // namespace m5envIII
 
 #endif
