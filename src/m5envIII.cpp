@@ -115,7 +115,10 @@ bool SendDiscovery() {
         return true;
     }
 
-    return sendSensorDiscovery("Temperature", EC_NONE, "temperature", "°C") && sendSensorDiscovery("Humidity", EC_NONE, "humidity", "%") && sendSensorDiscovery("BME280 Pressure", EC_NONE, "pressure", "hPa");
+    return 
+      sendSensorDiscovery("Temperature", EC_NONE, "temperature", "°C") && 
+      sendSensorDiscovery("Humidity", EC_NONE, "humidity", "%") && 
+      sendSensorDiscovery("Pressure", EC_NONE, "pressure", "hPa");
 }
 
 } //m5envIII
