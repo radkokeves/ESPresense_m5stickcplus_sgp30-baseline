@@ -88,20 +88,16 @@ uint32_t Loop() {
     if (previousMillis == 0 || millis() - previousMillis >= sensorInterval) {
         previousMillis = millis();
 
-        pressure = qmp6988.calcPressure();
+        pressure = qmp6988.calcPressure() / 100;
         if (sht30.get() == 0) {  // Obtain the data of shT30
             tmp = sht30.cTemp;   // Store the temperature obtained from shT30.
             hum = sht30.humidity;  // Store the humidity obtained from the SHT30.
         } else {
             tmp = 0, hum = 0;
         }
-        //M5.lcd.fillRect(0, 20, 100, 60,BLACK);
-        //M5.lcd.setCursor(0, 20);
-        //M5.Lcd.printf("m5envIII Temp: %2.1f  \r\nHumi: %2.0f%%  \r\nPressure:%2.0fPa\r\n", tmp, hum, pressure);
-        //delay(2000);
         
-        Serial.printf("m5envIII Temp: %2.1f  \tHumi: %2.0f%%  \tPressure: %2.0fPa\r\n", tmp, hum, pressure);
-        Display::Status("Temp: %2.1f  \tHumi: %2.0f%%  \tPress: %2.0fPa\r\n", tmp, hum, pressure);
+        Serial.printf("m5envIII Temp: %2.1f  \tHumi: %2.0f%%  \tPressure: %2.0fhPa\r\n", tmp, hum, pressure);
+        Display::Status("Temp: %2.1f  \tHumi: %2.0f%%  \tPress: %2.0fhPa\r\n", tmp, hum, pressure);
 
         if (previousMillis > 30000) {  // First 30 seconds after boot, don't report
             pub((roomsTopic + "/temperature").c_str(), 0, 1, String(tmp).c_str());
